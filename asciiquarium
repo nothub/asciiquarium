@@ -55,6 +55,10 @@
 #     various bug fixes and consistency patches
 #     (https://github.com/nothub/asciiquarium/pulls?q=author:planet36)
 #
+#   Hugh Davenport: https://github.com/hughdavenport
+#     add new creature mode
+#     (https://github.com/nothub/asciiquarium/pulls?q=author:hughdavenport)
+#
 #############################################################################
 # License:
 #
@@ -95,9 +99,22 @@ Options:
   -v --version      Print version and exit
 
 Hotkeys:
-  q  quit
-  r  redraw
-  p  pause
+  q            quit
+  r            redraw
+  p            pause
+  space [key]  add new entity, where key is one of
+          b        big fish
+          B        suBmarine
+          d        dolphins
+          D        Ducks
+          h        fishhook
+          m        monster
+          O        swOrd
+          r        random
+          s        ship
+          S        Shark
+          w        whale
+          W        sWan
 ';
 
 my $new_fish = 1;
@@ -200,6 +217,32 @@ sub main {
             if    ($in eq 'q') {quit();}  # Exit
             elsif ($in eq 'r' || $in eq KEY_RESIZE()) {last;}  # Redraw (will recreate all objects)
             elsif ($in eq 'p') {$paused = !$paused;}
+            elsif ($in eq ' ') {
+                while (1) { # Add creature mode
+                    $in = getch();
+
+                    if    (lc($in) eq 'q') {quit();}  # Exit elsif ($in eq ' ') {last;}    # Go back to normal mode
+                    elsif (lc($in) eq 'p') {$paused = !$paused;}
+
+                    elsif ($in eq 'b') {add_big_fish(undef, $anim);}
+                    elsif ($in eq 'B') {add_submarine(undef, $anim);}
+                    elsif ($in eq 'd') {add_dolphins(undef, $anim);}
+                    elsif ($in eq 'D') {add_ducks(undef, $anim);}
+                    elsif ($in eq 'h') {add_fishhook(undef, $anim);}
+                    elsif ($in eq 'm') {add_monster(undef, $anim);}
+                    elsif ($in eq 'O') {add_sword_fish(undef, $anim);}
+                    elsif ($in eq 'r') {random_object(undef, $anim);}
+                    elsif ($in eq 's') {add_ship(undef, $anim);}
+                    elsif ($in eq 'S') {add_shark(undef, $anim);}
+                    elsif ($in eq 'w') {add_whale(undef, $anim);}
+                    elsif ($in eq 'W') {add_swan(undef, $anim);}
+
+                    elsif ($screensaver && $in ne '-1') {quit();}      # Exit for any key (screensaver mode)
+
+                    $anim->animate() unless ($paused);
+                    if ($in ne '-1') {last;}
+                }
+            }
             elsif ($screensaver && $in ne '-1') {quit();}      # Exit for any key (screensaver mode)
 
             $anim->animate() unless ($paused);
