@@ -67,6 +67,9 @@
 #     fix orphaned hook_point entities
 #     (https://github.com/nothub/asciiquarium/pulls?q=author:ku1ik)
 #
+#   Jared Still: https://github.com/jkstill
+#   (https://github.com/cmatsuoka/asciiquarium/pull/25)
+#
 #############################################################################
 # License:
 #
@@ -118,6 +121,7 @@ Hotkeys:
       d             dolphins
       D             Ducks
       h             fishhook
+      j             jellyfish
       m             monster
       O             swOrd
       r             random
@@ -236,6 +240,7 @@ sub main {
                     elsif ($in eq 'd') {add_dolphins(undef, $anim);}
                     elsif ($in eq 'D') {add_ducks(undef, $anim);}
                     elsif ($in eq 'h') {add_fishhook(undef, $anim);}
+                    elsif ($in eq 'j') {add_jellyfish(undef, $anim);}
                     elsif ($in eq 'm') {add_monster(undef, $anim);}
                     elsif ($in eq 'O') {add_sword_fish(undef, $anim);}
                     elsif ($in eq 'r') {random_object(undef, $anim);}
@@ -2430,6 +2435,146 @@ __________;"o,-------------......"""""`'-._/(
     );
 }
 
+sub add_jellyfish {
+	my ($old_ent, $anim) = @_;
+
+	# 1. Define the art and color masks from Step 1
+	my @left_tentacle_chars  = qw# ( ( [ / | #;
+	my @right_tentacle_chars = qw# ) ) ] \ | #;
+	my $tentacle_char_index = int(rand(scalar(@left_tentacle_chars)))-1;
+	my $l = $left_tentacle_chars[$tentacle_char_index];
+	my $r = $right_tentacle_chars[$tentacle_char_index];
+
+	my @jellyfish_image = (
+[
+qq{
+  .-.
+ (o o)
+'-' '-'
+ $l $r $l
+ $r $l $r
+ $l $r $l
+},
+qq{
+  .-.
+ (o o)
+'-' '-'
+ $r $l $r
+ $l $r $l
+ $r $l $r
+}
+],
+[
+qq{
+  .-.
+ (o o)
+'-' '-'
+ $r $l $r
+ $l $r $l
+ $r $l $r
+},
+qq{
+  .-.
+ (o o)
+'-' '-'
+ $l $r $l
+ $r $l $r
+ $l $r $l
+},
+]
+);
+
+	my @jellyfish_mask = (
+q{
+  BBB
+ BW WB
+GRG GRG
+ B B B
+ B B B
+ B B B
+},
+q{
+  BBB
+ BW WB
+GRG GRG
+ B B B
+ B B B
+ B B B
+});
+
+	# 2. Determine direction and speed
+	my $dir = int(rand(2)); # 0 for right, 1 for left
+	my $x;
+	my $speed = rand(1) + 0.5; # Horizontal speed
+	if($dir) {
+		$speed *= -1;
+		$x = $anim->width()-2; # Start at right edge
+	} else {
+		$x = 0; # Start at left edge
+	}
+
+	# 3. Set vertical position and depth
+	my $max_height = 9;
+	my $min_height = $anim->height() - 10;
+	my $y = int(rand($min_height - $max_height)) + $max_height;
+	my $depth = int(rand(10)) + $depth{'fish_start'}; # Randomly assign depth
+
+	# 4. Randomize colors in the mask
+	my $color_mask = rand_color($jellyfish_mask[$dir]);
+
+	# 5. Start with a small vertical drift. The callback will keep
+	#    changing this while the jellyfish is alive.
+	my $vertical_speed = (int(rand(2)) == 0) ? -0.2 : 0.2;
+	my $vertical_change_delay = int(rand(40)) + 20;
+
+	# 6. Create the entity
+	$anim->new_entity(
+		type		     => 'jellyfish',
+		shape		=> $jellyfish_image[$dir],
+		auto_trans	 => 1,
+		color		=> $color_mask,
+		position	=> [ $x, $y, $depth ],
+		# Jellyfish float slowly side-to-side and wander up/down over time.
+		callback	=> \&jellyfish_callback,
+		callback_args	=> [ $speed, $vertical_speed, 0, 0.2, $vertical_change_delay ],
+		die_offscreen	=> 1,                 # Remove when it leaves the screen
+		death_cb	=> \&random_object,   # Call a random object when it dies
+		default_color	=> 'MAGENTA',         # A fallback color
+	);
+}
+
+
+sub jellyfish_callback {
+	my ($jellyfish, $anim) = @_;
+
+	my $args = $jellyfish->callback_args();
+	my @pos = $jellyfish->position();
+	my @size = $jellyfish->size();
+
+	# Change the vertical drift every so often so a single jellyfish
+	# follows a wandering path instead of committing to one direction.
+	if (!defined($args->[4]) || $args->[4] <= 0) {
+		$args->[1] = (rand() < 0.5 ? -1 : 1) * (rand(0.25) + 0.05);
+		$args->[4] = int(rand(40)) + 20;
+	}
+	else {
+		$args->[4]--;
+	}
+
+	# Keep jellyfish from drifting into the title/waterline or bottom area.
+	if ($pos[1] <= 7) {
+		$args->[1] = abs($args->[1]);
+		$args->[4] = int(rand(20)) + 10;
+	}
+	elsif ($pos[1] + $size[1] >= $anim->height() - 2) {
+		$args->[1] = -abs($args->[1]);
+		$args->[4] = int(rand(20)) + 10;
+	}
+
+	$jellyfish->callback_args($args);
+	return $jellyfish->move_entity($anim);
+}
+
 sub init_random_objects {
     return (
         \&add_ship,
@@ -2443,6 +2588,7 @@ sub init_random_objects {
         \&add_dolphins,
         \&add_submarine,
         \&add_sword_fish,
+        \&add_jellyfish,
     );
 }
 
