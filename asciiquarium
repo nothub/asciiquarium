@@ -63,6 +63,10 @@
 #     add transparency toggle hotkey
 #     (https://github.com/nothub/asciiquarium/pulls?q=author:viggou)
 #
+#   Marcin Kulik: https://github.com/ku1ik
+#     fix orphaned hook_point entities
+#     (https://github.com/nothub/asciiquarium/pulls?q=author:ku1ik)
+#
 #############################################################################
 # License:
 #

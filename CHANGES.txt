@@ -1,5 +1,9 @@
 Changes for Asciiquarium
 
+Version 1.5
+    - Fix CPU usage growth caused by orphaned hook_point entities (ku1ik)
+      https://github.com/nothub/asciiquarium/pull/7
+
 Version 1.4
     - Add a mode where you can add creatures (hughdavenport)
       https://github.com/nothub/asciiquarium/pull/4
