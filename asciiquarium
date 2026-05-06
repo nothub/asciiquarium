@@ -98,7 +98,7 @@ use Getopt::Long qw(GetOptions);
 use strict;
 use warnings;
 
-my $version = "1.5";
+my $version = "1.6";
 my $help_message = 'Asciiquarium is an aquarium/sea animation in ASCII art.
 Enjoy the mysteries of the sea from the safety of your own terminal!
 
