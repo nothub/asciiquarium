@@ -68,7 +68,7 @@
 #     (https://github.com/nothub/asciiquarium/pulls?q=author:ku1ik)
 #
 #   Jared Still: https://github.com/jkstill
-#   (https://github.com/cmatsuoka/asciiquarium/pull/25)
+#     (https://github.com/nothub/asciiquarium/pulls?q=jkstill)
 #
 #############################################################################
 # License:
@@ -2441,7 +2441,7 @@ sub add_jellyfish {
 	# 1. Define the art and color masks from Step 1
 	my @left_tentacle_chars  = qw# ( ( [ / | #;
 	my @right_tentacle_chars = qw# ) ) ] \ | #;
-	my $tentacle_char_index = int(rand(scalar(@left_tentacle_chars)))-1;
+	my $tentacle_char_index = int(rand(scalar(@left_tentacle_chars)));
 	my $l = $left_tentacle_chars[$tentacle_char_index];
 	my $r = $right_tentacle_chars[$tentacle_char_index];
 
@@ -2542,7 +2542,6 @@ GRG GRG
 		default_color	=> 'MAGENTA',         # A fallback color
 	);
 }
-
 
 sub jellyfish_callback {
 	my ($jellyfish, $anim) = @_;
