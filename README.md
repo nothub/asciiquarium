@@ -51,6 +51,7 @@ Hotkeys:
       d             dolphins
       D             Ducks
       h             fishhook
+      j             jellyfish
       m             monster
       O             swOrd
       r             random
