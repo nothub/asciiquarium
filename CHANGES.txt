@@ -1,5 +1,9 @@
 Changes for Asciiquarium
 
+Version 1.6
+    - Added jellyfish (jkstill)
+      https://github.com/nothub/asciiquarium/pull/8
+
 Version 1.5
     - Fix CPU usage growth caused by orphaned hook_point entities (ku1ik)
       https://github.com/nothub/asciiquarium/pull/7
