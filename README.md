@@ -53,7 +53,7 @@ Hotkeys:
       h             fishhook
       j             jellyfish
       m             monster
-      O             swOrd
+      O             swOrdfish
       r             random
       s             ship
       S             Shark
