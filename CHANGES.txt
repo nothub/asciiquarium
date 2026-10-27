@@ -1,5 +1,12 @@
 Changes for Asciiquarium
 
+Version 1.7
+    - Replace 'swOrd' with 'swOrdfish' in help message (planet36)
+      https://github.com/nothub/asciiquarium/pull/9
+    - Fix user-added creatures respawning as random objects, which made
+      the number of creatures grow with every one added (planet36)
+      https://github.com/nothub/asciiquarium/pull/10
+
 Version 1.6
     - Added jellyfish (jkstill)
       https://github.com/nothub/asciiquarium/pull/8
