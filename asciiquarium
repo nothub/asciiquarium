@@ -232,7 +232,8 @@ sub main {
                 $hotkeys_hidden = 1;
             }
 
-            if    ($in eq 'q') {quit();}  # Exit
+            if    ($screensaver && $in ne '-1' && $in ne KEY_RESIZE()) {quit();}  # Exit for any key (screensaver mode)
+            elsif ($in eq 'q') {quit();}  # Exit
             elsif ($in eq 'r' || $in eq KEY_RESIZE()) {last;}  # Redraw (will recreate all objects)
             elsif ($in eq 'p') {$paused = !$paused;}
             elsif ($in eq 't') {  # Toggle transparency
@@ -262,14 +263,11 @@ sub main {
                     elsif ($in eq 'w') {add_whale(undef, $anim, 1);}
                     elsif ($in eq 'W') {add_swan(undef, $anim, 1);}
 
-                    elsif ($screensaver && $in ne '-1') {quit();}      # Exit for any key (screensaver mode)
-
                     $anim->animate() unless ($paused);
                     if ($in ne '-1') {last;}
                 }
                 hide_overlay($anim, $mode_overlay);
             }
-            elsif ($screensaver && $in ne '-1') {quit();}  # Exit for any key (screensaver mode)
             elsif ($in eq 'h' && $hotkeys_hidden) {}  # Help was open, keep it closed
             elsif ($in eq 'h' || $in ne '-1') {  # Help, or any unbound key
                 $hotkeys_overlay = show_overlay($anim, $hotkeys . $creature_keys);
