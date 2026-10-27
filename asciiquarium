@@ -135,7 +135,7 @@ Options:
   -v --version      Print version and exit
 
 ' . $hotkeys . $creature_keys;
-my $creature_menu = "Add creature:\n" . $creature_keys;
+my $creature_menu = "Add creature (any other key closes):\n" . $creature_keys;
 
 my $new_fish = 1;
 my $new_monster = 1;
@@ -246,7 +246,7 @@ sub main {
                 while (1) { # Add creature mode
                     $in = getch();
 
-                    if    (lc($in) eq 'q') {quit();}  # Exit
+                    if    ($in eq ' ') {last;}  # Close menu
                     elsif (lc($in) eq 'p') {$paused = !$paused;}
 
                     elsif ($in eq 'b') {add_big_fish(undef, $anim, 1);}
