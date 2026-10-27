@@ -100,7 +100,7 @@ use List::Util qw(max);
 use strict;
 use warnings;
 
-my $version = "1.6";
+my $version = "1.7";
 my $hotkeys = 'Hotkeys:
   q       quit
   r       redraw
