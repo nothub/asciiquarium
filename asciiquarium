@@ -247,7 +247,7 @@ sub main {
                 while (1) { # Add creature mode
                     $in = getch();
 
-                    if    (lc($in) eq 'q') {quit();}  # Exit elsif ($in eq ' ') {last;}    # Go back to normal mode
+                    if    (lc($in) eq 'q') {quit();}  # Exit
                     elsif (lc($in) eq 'p') {$paused = !$paused;}
 
                     elsif ($in eq 'b') {add_big_fish(undef, $anim, 1);}
