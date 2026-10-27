@@ -209,7 +209,6 @@ sub main {
 
     init_colors($anim);
 
-    my $start_time = time;
     my $paused = 0;
     while (1) {
 
@@ -221,7 +220,6 @@ sub main {
 
         $anim->redraw_screen();
 
-        my $nexttime = 0;
         my $hotkeys_overlay;
 
         while (1) {
