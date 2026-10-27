@@ -6,6 +6,8 @@ Version 1.7
     - Fix user-added creatures respawning as random objects, which made
       the number of creatures grow with every one added (planet36)
       https://github.com/nothub/asciiquarium/pull/10
+    - Toggle the hotkeys with 'h', show them on any unbound key, and show
+      the creature keys while in add creature mode (nothub)
 
 Version 1.6
     - Added jellyfish (jkstill)

@@ -96,10 +96,34 @@ use Term::Animation::Entity;
 use Data::Dumper;
 use Curses;
 use Getopt::Long qw(GetOptions);
+use List::Util qw(max);
 use strict;
 use warnings;
 
 my $version = "1.6";
+my $hotkeys = 'Hotkeys:
+  q       quit
+  r       redraw
+  p       pause
+  t       toggle transparency
+  h       toggle help
+  space,  add new entity
+  followed by:
+';
+my $creature_keys = '      b   big fish
+      B   suBmarine
+      d   dolphins
+      D   Ducks
+      h   fishhook
+      j   jellyfish
+      m   monster
+      O   swOrdfish
+      r   random
+      s   ship
+      S   Shark
+      w   whale
+      W   sWan
+';
 my $help_message = 'Asciiquarium is an aquarium/sea animation in ASCII art.
 Enjoy the mysteries of the sea from the safety of your own terminal!
 
@@ -110,27 +134,8 @@ Options:
   -h --help         Print help and exit
   -v --version      Print version and exit
 
-Hotkeys:
-  q                 quit
-  r                 redraw
-  p                 pause
-  t                 toggle transparency
-  space,            add new entity
-  followed by:
-      b             big fish
-      B             suBmarine
-      d             dolphins
-      D             Ducks
-      h             fishhook
-      j             jellyfish
-      m             monster
-      O             swOrdfish
-      r             random
-      s             ship
-      S             Shark
-      w             whale
-      W             sWan
-';
+' . $hotkeys . $creature_keys;
+my $creature_menu = "Add creature:\n" . $creature_keys;
 
 my $new_fish = 1;
 my $new_monster = 1;
@@ -168,7 +173,7 @@ my @random_objects = init_random_objects();
 
 # the Z depth at which certain items occur
 my %depth = (
-    # no gui yet
+    # gui
     guiText     => 0,
     gui         => 1,
 
@@ -217,9 +222,17 @@ sub main {
         $anim->redraw_screen();
 
         my $nexttime = 0;
+        my $hotkeys_overlay;
 
         while (1) {
             my $in = lc(getch());
+            my $hotkeys_hidden = 0;
+
+            if ($hotkeys_overlay && $in ne '-1') {
+                hide_overlay($anim, $hotkeys_overlay);
+                undef $hotkeys_overlay;
+                $hotkeys_hidden = 1;
+            }
 
             if    ($in eq 'q') {quit();}  # Exit
             elsif ($in eq 'r' || $in eq KEY_RESIZE()) {last;}  # Redraw (will recreate all objects)
@@ -230,6 +243,7 @@ sub main {
                 last;  # Force redraw
             }
             elsif ($in eq ' ') {
+                my $mode_overlay = show_overlay($anim, $creature_menu);
                 while (1) { # Add creature mode
                     $in = getch();
 
@@ -255,8 +269,13 @@ sub main {
                     $anim->animate() unless ($paused);
                     if ($in ne '-1') {last;}
                 }
+                hide_overlay($anim, $mode_overlay);
             }
             elsif ($screensaver && $in ne '-1') {quit();}  # Exit for any key (screensaver mode)
+            elsif ($in eq 'h' && $hotkeys_hidden) {}  # Help was open, keep it closed
+            elsif ($in eq 'h' || $in ne '-1') {  # Help, or any unbound key
+                $hotkeys_overlay = show_overlay($anim, $hotkeys . $creature_keys);
+            }
 
             $anim->animate() unless ($paused);
         }
@@ -265,6 +284,31 @@ sub main {
 
     }
 
+}
+
+sub show_overlay {
+    my ($anim, $text) = @_;
+    my @lines = split(/\n/, $text);
+    my $width = max(map { length } @lines);
+    my $border = '+' . '-' x ($width + 2) . '+';
+    my $box = join("\n", $border, (map { sprintf('| %-*s |', $width, $_) } @lines), $border);
+    my $overlay = $anim->new_entity(
+        shape         => $box,
+        position      => [ 0, 0, $depth{'guiText'} ],
+        default_color => 'WHITE',
+    );
+    # redraw now, since animate() does not run while paused
+    $anim->redraw_screen();
+    return $overlay;
+}
+
+sub hide_overlay {
+    my ($anim, $overlay) = @_;
+    # del_entity() only queues the removal for the next animate(), so move
+    # the overlay offscreen to keep the redraw from drawing it
+    $overlay->y(-$overlay->height());
+    $anim->del_entity($overlay);
+    $anim->redraw_screen();
 }
 
 sub add_environment {
