@@ -9,6 +9,7 @@ Version 1.7
     - Toggle the hotkeys with 'h', show them on any unbound key, and show
       the creature keys while in add creature mode (nothub)
     - Exit screensaver mode on any key, not only on unbound ones (nothub)
+    - Close the add creature menu on 'q' instead of quitting (nothub)
 
 Version 1.6
     - Added jellyfish (jkstill)
