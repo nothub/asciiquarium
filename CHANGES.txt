@@ -1,5 +1,11 @@
 Changes for Asciiquarium
 
+Version 1.8
+    - Fix sharks and fishhooks breaking each other when several are on
+      screen: one dying removed the others' teeth or hook parts, and a
+      caught fish could reel in the wrong hook (planet36)
+      https://github.com/nothub/asciiquarium/pull/11
+
 Version 1.7
     - Replace 'swOrd' with 'swOrdfish' in help message (planet36)
       https://github.com/nothub/asciiquarium/pull/9
